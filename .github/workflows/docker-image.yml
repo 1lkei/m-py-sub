@@ -1,7 +1,7 @@
 name: Docker images build and push
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
   push:
     branches: [ "main" ]
     # paths-ignore:   # 排除文件
