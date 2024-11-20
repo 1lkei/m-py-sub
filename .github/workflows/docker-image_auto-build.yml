@@ -1,10 +1,8 @@
 name: Docker images build and push
 
 on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - 'actions-time.txt'
+  schedule:
+    - cron: "0 0 * * *"
 
 jobs:
   build:
@@ -21,7 +19,7 @@ jobs:
         with:
           username: 1lkei
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
+          
       - name: Compare image
         run: |
           docker pull python:alpine
@@ -36,12 +34,15 @@ jobs:
           echo "local_info=$local_info" >> $GITHUB_ENV
 
       - name: Set up QEMU
+        if: env.local_info != env.remote_info
         uses: docker/setup-qemu-action@v3.2.0
 
       - name: Set up Docker Buildx
+        if: env.local_info != env.remote_info
         uses: docker/setup-buildx-action@v3.7.1
 
       - name: Docker build-push
+        if: env.local_info != env.remote_info
         uses: docker/build-push-action@v6.9.0
         with:
           context: .
